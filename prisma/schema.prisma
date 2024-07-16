@@ -1,0 +1,191 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model AdmUsers {
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String   @unique
+  password      String?
+  recoveryToken String?  @db.LongText
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Clients {
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String
+  cpfCnpj     String
+  type        String
+  phoneNumber String
+  street      String
+  district    String
+  number      String?
+  city        String
+  zipCode     String
+  state       String
+  isActive    Boolean
+  observation String?      @db.LongText
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  Users       Users[]
+  Contracts   Contracts[]
+  Extensions  Extensions[]
+  Queues      Queues[]
+  Numbers     Numbers[]
+  Cdr         Cdr[]
+}
+
+model Users {
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String   @unique
+  cpf           String
+  phoneNumber   String
+  password      String?
+  recoveryToken String?  @db.LongText
+  accessType    String
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  client        Clients  @relation(fields: [clientId], references: [id])
+  clientId      Int
+}
+
+model Contracts {
+  id         Int        @id @default(autoincrement())
+  startedAt  DateTime
+  finishedAt DateTime
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  client     Clients    @relation(fields: [clientId], references: [id])
+  clientId   Int
+  Devices    Devices[]
+  Invoices   Invoices[]
+}
+
+model Extensions {
+  id          Int      @id @default(autoincrement())
+  ramal       String   @unique
+  description String?
+  password    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  client      Clients  @relation(fields: [clientId], references: [id])
+  clientId    Int
+}
+
+model Queues {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  client      Clients  @relation(fields: [clientId], references: [id])
+  clientId    Int
+}
+
+model Numbers {
+  id          Int      @id @default(autoincrement())
+  number      String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  client      Clients  @relation(fields: [clientId], references: [id])
+  clientId    Int
+}
+
+model Cdr {
+  id            Int       @id @default(autoincrement())
+  linkedid      Int       @unique
+  callDate      DateTime?
+  source        String?
+  destination   String?
+  channel       String?
+  queue         String?
+  queueName     String?
+  agent         String?
+  direction     String?
+  status        String?
+  recordingFile String?
+  duration      Int?
+  waitingTime   Int?
+  serviceTime   Int?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  client        Clients   @relation(fields: [clientId], references: [id])
+  clientId      Int
+}
+
+model Devices {
+  id           Int       @id @default(autoincrement())
+  description  String
+  serialNumber String
+  mac          String
+  brand        String
+  model        String
+  isNew        Boolean
+  status       String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  contract     Contracts @relation(fields: [contractId], references: [id])
+  contractId   Int
+}
+
+model Invoices {
+  id         Int       @id @default(autoincrement())
+  barcode    String
+  value      Float
+  status     String
+  dueDate    DateTime
+  fileName   String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  contract   Contracts @relation(fields: [contractId], references: [id])
+  contractId Int
+}
+
+model CallsHistory {
+  id          Int      @id @default(autoincrement())
+  status      String
+  queue       String
+  extension   String
+  uniqueId    String
+  linkId      String   @unique
+  phoneNumber String?
+  showOnPanel Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model cdr_lucas {
+  linkedid      String    @unique
+  calldate      DateTime?
+  source        String?
+  destination   String?
+  did           String?
+  channel       String?
+  dcontext      String?
+  queue         String?
+  direction     String?
+  agente        String?
+  agenteName    String?
+  status        String?
+  recordingFile String?
+  duration      Int?
+  waitingTime   Int?
+  sync          Int?
+}
