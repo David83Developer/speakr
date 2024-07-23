@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = "mysql://user2:Root%23123@localhost:3306/speakr?serverTimezone=America/Sao_Paulo"
 }
 
 model AdmUsers {

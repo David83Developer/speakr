@@ -2,16 +2,12 @@ import io from 'socket.io-client'
 
 import dotenv from 'dotenv';
 
-import EventEmitter from 'events';
-
-import { getThisCall, setCallsHistory, setOnPanel, updateStatus } from '../models/CallsHistory';
+import { getThisCall, setCallsHistory, updateStatus } from '../models/CallsHistory';
 import callType from '../types/call';
 
 dotenv.config();
 
-const url = process.env.SOCKET_URL
-
-const eventEmitter = new EventEmitter()
+const url = "http://apimonitor.speakr.com.br:3001"
 
 /**
  * Essa função acessa o servidor que fornece as chamadas de acordo com o evento.
@@ -92,17 +88,8 @@ const getSocket = () => {
 
         await updateStatus(event.linkedid, "Encerrado", false)
         const response = await getThisCall(event.linkedid)
-        const panel = await setOnPanel()
         if (response) {
 
-          const data = {
-            contType: "closed",
-            event: event.event,
-            content: response,
-            panelContent: panel
-          }
-
-          eventEmitter.emit('newCall', JSON.stringify(data));
           return response
 
         } 
@@ -153,18 +140,9 @@ const getSocket = () => {
 
         await setCallsHistory(call)
         const response = await getThisCall(call.linkedid)
-        const panel = await setOnPanel()
 
         if (response) {
 
-          const data = {
-            contType: "join",
-            event: event.event,
-            content: response,
-            panelContent: panel
-          }
-
-          eventEmitter.emit('newCall', JSON.stringify(data));
           return response
 
         } else {
@@ -177,26 +155,15 @@ const getSocket = () => {
 
       }
 
-
     } else if (event.event == "QueueCallerAbandon") {
-
 
       try {
 
         await updateStatus(event.linkedid, "Abandonado", false)
         const response = await getThisCall(event.linkedid)
-        const panel = await setOnPanel()
 
         if (response) {
 
-          const data = {
-            contType: "abandon",
-            event: event.event,
-            content: response,
-            panelContent: panel
-          }
-
-          eventEmitter.emit('newCall', JSON.stringify(data));
           return response
 
         } else {
@@ -216,17 +183,8 @@ const getSocket = () => {
 
         await updateStatus(event.linkedid, "Atendido", true)
         const response = await getThisCall(event.linkedid)
-        const panel = await setOnPanel()
         if (response) {
 
-          const data = {
-            contType: "connect",
-            event: event.event,
-            content: response,
-            panelContent: panel
-          }
-
-          eventEmitter.emit('newCall', JSON.stringify(data));
           return response
 
         } else {
@@ -242,7 +200,6 @@ const getSocket = () => {
     }
 
   })
-
 
   socket.on('reconnect_attempt', () => {
     console.info('tentativa de reconexão')
@@ -265,4 +222,4 @@ const getSocket = () => {
 
 }
 
-export { getSocket, eventEmitter }
+export { getSocket }
