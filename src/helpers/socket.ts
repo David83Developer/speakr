@@ -7,7 +7,7 @@ import callType from '../types/call';
 
 dotenv.config();
 
-const url = "http://apimonitor.speakr.com.br:3001"
+const url = "https://apimonitor.speakr.com.br:3001"
 
 /**
  * Essa função acessa o servidor que fornece as chamadas de acordo com o evento.
