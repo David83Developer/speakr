@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:AzNBXmBTNUjuwnhGNIINsSGzTJCupYCd@app-monitor.cfciwce6kx69.sa-east-1.rds.amazonaws.com:3306/app-monitor?serverTimezone=America/Sao_Paulo"
+  url      = "mysql://root:jCBkgJWWPpcfQf2@app-monitor.cfciwce6kx69.sa-east-1.rds.amazonaws.com:3306/app-monitor?serverTimezone=America/Sao_Paulo"
 }
 
 model AdmUsers {
